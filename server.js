@@ -1,4 +1,7 @@
 const http = require("http");
+const port = 3000;
+
+
 
 function willItBlend(callback) {
   // should be true for anything divisible by 3 between 0 and 9
@@ -12,23 +15,26 @@ function willItBlend(callback) {
 }
 
 
+const server = http.createServer(function(req, res) {
+    willItBlend(function(err, result) {
+       if (err) {
+            res.statusCode = 500;
+            res.setHeader('Content-Type', 'text/html');
+            return res.write(err.message);;
+       } else {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'text/html');
+            res.write(result);
+       }
+    })
+    res.end();
+});
 
 
-
-
-
-
-
-//create a server object:
-http
-  .createServer(function(req, res) {
-    /* delete the line below and replace it with a call to willItBlend.
-     write the callback function that is passed to willItBlend inline,
-     within the parameter list in the function call */   
-    res.write("hello world"); // delete this line 
-    res.end(); //end the response
-  })
-  .listen(8080); //the server object listens on port 8080
-
-
-// this is a fork of https://codesandbox.io/s/rl9v3156lp
+server.listen(port, function(error) {
+    if (error) {
+        console.log('Something went wrong', error)
+    } else {
+        console.log('Server is listening on port ' + port)
+    };
+});
